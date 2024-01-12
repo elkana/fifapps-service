@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
+import com.example.demo.dto.StructureCreditDto;
 import com.example.demo.model.Customer;
 import com.example.demo.service.CustomerService;
 
@@ -18,6 +20,7 @@ import com.example.demo.service.CustomerService;
 public class CustomerController {
 
 	@Autowired CustomerService serviceCustomer;
+	@Autowired RestTemplate restTemplate;
 	
 	@GetMapping("/list")
 	public ResponseEntity<List<Customer>> getAll() {
@@ -36,4 +39,10 @@ public class CustomerController {
 		return ResponseEntity.ok(newData);
 	}
 	
+	// call om-service/structurecredit
+	@GetMapping("/structure_credits")
+	public ResponseEntity<?> getStructureCredits() {
+		var response = restTemplate.getForEntity("http://localhost:1112/om/structure-credit/list", StructureCreditDto[].class);
+		return ResponseEntity.ok(response.getBody());
+	}
 }
